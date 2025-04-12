@@ -50,5 +50,5 @@ The system will include:
 - **Haichao Xing** – [hcxing@uw.edu](mailto:hcxing@uw.edu) – Client  
 - **Shiyi Chen** – [sche753@uw.edu](mailto:sche753@uw.edu) – Developer  
 
---
+---
 
