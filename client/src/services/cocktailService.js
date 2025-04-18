@@ -1,100 +1,87 @@
 import axios from 'axios';
 
-// Create an axios instance with default configuration
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
-  timeout: 5000,
+  withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
-// Add response interceptor for better error handling
-api.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('API Error:', error.message);
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('Error response:', error.response.data);
-      throw new Error(error.response.data.message || 'Failed to fetch data');
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.error('No response received:', error.request);
-      throw new Error('No response from server. Please check if the server is running.');
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error('Request setup error:', error.message);
-      throw new Error('Failed to make request');
-    }
+// Helper function to handle API errors
+const handleApiError = (error) => {
+  console.error('API Error:', error);
+  if (error.response) {
+    throw new Error(error.response.data.error || 'Server error occurred');
+  } else if (error.request) {
+    throw new Error('Could not connect to the server. Please check if the server is running.');
+  } else {
+    throw new Error('An unexpected error occurred');
   }
-);
+};
 
 const cocktailService = {
-  // Get random cocktail
-  getRandomCocktail: async () => {
+  async getRandomCocktail() {
     try {
       const response = await api.get('/cocktails/random');
       return response.data;
     } catch (error) {
-      console.error('Error in getRandomCocktail:', error);
-      throw error;
+      handleApiError(error);
     }
   },
 
-  // Search cocktails by name
-  searchCocktails: async (query) => {
+  async searchCocktails(query) {
     try {
-      const response = await api.get(`/cocktails/search?q=${query}`);
+      const response = await api.get(`/cocktails/search?name=${encodeURIComponent(query)}`);
       return response.data;
     } catch (error) {
-      console.error('Error in searchCocktails:', error);
-      throw error;
+      handleApiError(error);
     }
   },
 
-  // Get cocktail by ID
-  getCocktailById: async (id) => {
+  async getCocktailById(id) {
     try {
       const response = await api.get(`/cocktails/${id}`);
       return response.data;
     } catch (error) {
-      console.error('Error in getCocktailById:', error);
-      throw error;
+      handleApiError(error);
     }
   },
 
-  // Get cocktails by ingredient
-  getCocktailsByIngredient: async (ingredient) => {
+  async getCocktailsByIngredient(ingredient) {
     try {
-      const response = await api.get(`/cocktails/ingredient/${ingredient}`);
+      const response = await api.get(`/cocktails/ingredient/${encodeURIComponent(ingredient)}`);
       return response.data;
     } catch (error) {
-      console.error('Error in getCocktailsByIngredient:', error);
-      throw error;
+      handleApiError(error);
     }
   },
 
-  // Get cocktails by category
-  getCocktailsByCategory: async (category) => {
+  async getCocktailsByCategory(category) {
     try {
-      const response = await api.get(`/cocktails/category/${category}`);
+      const response = await api.get(`/cocktails/category/${encodeURIComponent(category)}`);
       return response.data;
     } catch (error) {
-      console.error('Error in getCocktailsByCategory:', error);
-      throw error;
+      handleApiError(error);
     }
   },
 
-  // Get all categories
-  getCategories: async () => {
+  async getCategories() {
     try {
-      const response = await api.get('/cocktails/categories');
+      const response = await api.get('/cocktails/categories/list');
       return response.data;
     } catch (error) {
-      console.error('Error in getCategories:', error);
-      throw error;
+      handleApiError(error);
+    }
+  },
+
+  // Test connection to the server
+  async testConnection() {
+    try {
+      const response = await api.get('/test');
+      return response.data;
+    } catch (error) {
+      handleApiError(error);
     }
   }
 };
