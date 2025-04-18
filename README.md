@@ -13,14 +13,14 @@ A lightweight web application for discovering cocktail recipes, built with React
 
 ### One-line Setup (Windows PowerShell)
 ```powershell
-git clone https://github.com/yourusername/cocktail-curator.git; cd cocktail-curator; npm install; npm start
+git clone https://github.com/Maris-26/510-hc_Web.git; cd 510-hc_Web; npm install; npm start
 ```
 
 ### Step-by-Step Setup
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/cocktail-curator.git
-cd cocktail-curator
+git clone https://github.com/Maris-26/510-hc_Web.git
+cd 510-hc_Web
 ```
 
 2. Install dependencies:
