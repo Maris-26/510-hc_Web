@@ -78,9 +78,6 @@ cocktail-curator/
 - Data visualization dashboard
 - Machine learning recommendations
 
-## API Documentation
-The backend API documentation is available at `http://localhost:5000/api-docs` when the server is running.
-
 ---
 
 ## 1. Project Objectives
