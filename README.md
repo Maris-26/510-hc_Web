@@ -120,88 +120,8 @@ cocktail-curator/
 This application uses [TheCocktailDB API](https://www.thecocktaildb.com/api.php) for cocktail data.
 
 
+## Another Version in the Branch Full
 
-## Full Version in the Branch
-
-## Requirements
-
-### Backend (Node.js)
-- Node.js >= 14.0.0
-- MongoDB >= 4.4
-- Dependencies listed in `server/package.json`
-
-### Frontend (React)
-- Node.js >= 14.0.0
-- Dependencies listed in `client/package.json`
-
-### Streamlit Dashboard
-- Python >= 3.8
-- Dependencies listed in `streamlit/requirements.txt`
-
-## Setup Instructions
-
-### Prerequisites
-
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-
-### Backend Setup
-
-1. Navigate to the server directory:
-   ```bash
-   cd server
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Create a `.env` file with the following variables:
-   ```
-   PORT=5000
-   MONGODB_URI=mongodb://localhost:27017/cocktail-curator
-   NODE_ENV=development
-   ```
-
-4. Start the backend server:
-   ```bash
-   npm run dev
-   ```
-
-### Frontend Setup
-
-1. Navigate to the client directory:
-   ```bash
-   cd client
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm start
-   ```
-
-## Running the Application
-
-1. Start the backend server (in server directory):
-   ```bash
-   npm run dev
-   ```
-
-2. Start the frontend (in client directory):
-   ```bash
-   npm start
-   ```
-
-3. Open your browser and navigate to:
-   ```
-   http://localhost:3000
-   ```
 
 ## License
 MIT
