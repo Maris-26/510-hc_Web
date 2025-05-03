@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import Masonry from 'react-masonry-css';
 import axios from 'axios';
 import './App.css';
+import MarqueeText from './MarqueeText';
 
 const API_URL = 'https://www.thecocktaildb.com/api/json/v1/1';
 
@@ -8,18 +10,49 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [cocktails, setCocktails] = useState([]);
   const [selectedCocktail, setSelectedCocktail] = useState(null);
+  const [mode, setMode] = useState('randomGrid'); // 'randomGrid', 'searchGrid', 'singleDetail'
   const [loading, setLoading] = useState(false);
+  const [endReached, setEndReached] = useState(false);
+  const MAX_COCKTAILS = 636;
   const [error, setError] = useState(null);
 
+  // Fetch random cocktails and append to the list
+  const fetchRandomCocktails = useCallback(async (count = 12) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const promises = Array.from({ length: count }, () =>
+        axios.get(`${API_URL}/random.php`)
+      );
+      const results = await Promise.all(promises);
+      // Remove duplicates
+      const newDrinks = results
+        .map(res => res.data.drinks[0])
+        .filter(
+          (drink, idx, arr) =>
+            arr.findIndex(d => d.idDrink === drink.idDrink) === idx &&
+            !cocktails.some(c => c.idDrink === drink.idDrink)
+        );
+      setCocktails(prev => [...prev, ...newDrinks]);
+      setMode('randomGrid');
+      setSelectedCocktail(null);
+    } catch (err) {
+      setError('Failed to fetch random cocktails');
+    } finally {
+      setLoading(false);
+    }
+  }, [cocktails]);
+
+  // Fetch cocktails by search
   const searchCocktails = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
-
     setLoading(true);
     setError(null);
     try {
       const response = await axios.get(`${API_URL}/search.php?s=${searchTerm}`);
       setCocktails(response.data.drinks || []);
+      setMode('searchGrid');
       setSelectedCocktail(null);
     } catch (err) {
       setError('Failed to fetch cocktails');
@@ -29,22 +62,48 @@ function App() {
     }
   };
 
-  const getRandomCocktail = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(`${API_URL}/random.php`);
-      setSelectedCocktail(response.data.drinks[0]);
-      setCocktails([]);
-    } catch (err) {
-      setError('Failed to fetch random cocktail');
-    } finally {
-      setLoading(false);
-    }
+  // Pick a random cocktail from current grid and show detail
+  const showRandomDetail = () => {
+    if (cocktails.length === 0) return;
+    const random = cocktails[Math.floor(Math.random() * cocktails.length)];
+    setSelectedCocktail(random);
+    setMode('singleDetail');
   };
 
-  const selectCocktail = (cocktail) => {
-    setSelectedCocktail(cocktail);
+  // Back to grid
+  const backToGrid = () => {
+    setSelectedCocktail(null);
+    setMode(searchTerm ? 'searchGrid' : 'randomGrid');
+  };
+
+  // On load, fetch random cocktails
+  useEffect(() => {
+    fetchRandomCocktails(12);
+    // eslint-disable-next-line
+  }, []);
+
+  // Infinite scroll for randomGrid mode only
+  useEffect(() => {
+    if (mode !== 'randomGrid') return;
+
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 &&
+        !loading
+      ) {
+        fetchRandomCocktails(10);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [fetchRandomCocktails, loading, mode]);
+
+  const breakpointColumnsObj = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1
   };
 
   return (
@@ -54,7 +113,7 @@ function App() {
       </header>
       <main>
         <div className="search-container">
-          <form onSubmit={searchCocktails}>
+          <form onSubmit={searchCocktails} className="flex flex-1">
             <input
               type="text"
               value={searchTerm}
@@ -63,13 +122,13 @@ function App() {
             />
             <button type="submit">Search</button>
           </form>
-          <button onClick={getRandomCocktail}>Random Cocktail</button>
+          <button onClick={showRandomDetail}>Random Cocktail</button>
         </div>
 
         {error && <div className="error">{error}</div>}
         {loading && <div className="loading">Loading...</div>}
 
-        {selectedCocktail ? (
+        {mode === 'singleDetail' && selectedCocktail ? (
           <div className="cocktail-details">
             <h2>{selectedCocktail.strDrink}</h2>
             <img src={selectedCocktail.strDrinkThumb} alt={selectedCocktail.strDrink} />
@@ -91,25 +150,32 @@ function App() {
               <h3>Instructions:</h3>
               <p>{selectedCocktail.strInstructions}</p>
             </div>
-            <button onClick={() => setSelectedCocktail(null)}>Back to Results</button>
+            <button onClick={backToGrid}>Back to Grid</button>
           </div>
         ) : (
-          <div className="cocktail-grid">
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
             {cocktails.map((cocktail) => (
-              <div
-                key={cocktail.idDrink}
-                className="cocktail-card"
-                onClick={() => selectCocktail(cocktail)}
-              >
+              <div key={cocktail.idDrink} className="cocktail-card">
                 <img src={cocktail.strDrinkThumb} alt={cocktail.strDrink} />
-                <h3>{cocktail.strDrink}</h3>
+                <h3 className="cocktail-title">
+                  <MarqueeText>{cocktail.strDrink}</MarqueeText>
+                </h3>
               </div>
             ))}
-          </div>
+          </Masonry>
         )}
       </main>
+      <button 
+        className="back-to-top"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >  ↑ Top
+      </button>
     </div>
   );
 }
 
-export default App; 
+export default App;
