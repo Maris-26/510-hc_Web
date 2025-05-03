@@ -59,6 +59,12 @@ cocktail-curator/
 - [x] Frontend React application
 - [x] Cocktail search functionality
 - [x] Detailed cocktail view
+- [x] Main page with interactions
+   - Shows a Pinterest-style infinite scroll grid of random cocktails on load.  
+   - Rolls the title if it is over length.
+   - Shows all matches in a grid when searching.
+   - The "Random Cocktail" button shows a single random cocktail detail from the current grid.
+   - The "Back to Grid" button returns to the previous grid and re-enables infinite scroll if in random mode.
 - [ ] User authentication
 - [ ] Favorite cocktails feature
 - [ ] Advanced filtering options
