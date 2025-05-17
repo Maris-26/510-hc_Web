@@ -1,11 +1,34 @@
 # Cocktail Curator 🍸  
 **TECHIN 510 B Sp 25: Programming For Digital And Physical User Interfaces**
 
-A full-stack application for managing and discovering cocktails, built with MERN stack and Streamlit.
+> **Important**: Before starting, please add your OpenAI API key to the `.env` file:
+> ```
+> OPENAI_API_KEY=your_api_key_here
+> ```
 
-## Quick Setup
+A modern web application for exploring and discovering cocktails. Built with React and TypeScript, featuring a beautiful masonry grid layout and interactive cocktail details.
 
-### Step-by-Step Setup
+## Features
+
+- **Random Cocktail Discovery**: Browse through a collection of random cocktails
+- **Search Functionality**: Find specific cocktails by name
+- **Responsive Design**: Beautiful masonry grid layout that works on all devices
+- **Interactive Details**: View detailed information about each cocktail including ingredients and instructions
+- **Random Cocktail Feature**: Get a random cocktail suggestion with one click
+- **Marquee Text**: Long cocktail names are displayed with a smooth scrolling effect
+- **Back to Top**: Easy navigation with a floating back-to-top button
+- **Smart Recommendations**: Get personalized cocktail suggestions based on your preferences and available ingredients
+- **Ingredient Matching**: Find cocktails you can make with ingredients you have on hand
+- **Category Filtering**: Browse cocktails by type, alcohol content, or occasion
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Node.js (v14.0.0 or higher)
+- npm (v6.0.0 or higher)
+
+## Setup Instructions
+
 1. Clone the repository:
 ```bash
 git clone https://github.com/Maris-26/510-hc_Web.git
@@ -17,12 +40,67 @@ cd 510-hc_Web
 npm install
 ```
 
-3. Start the application:
+3. Start the development server:
 ```bash
 npm start
 ```
 
-The application will open automatically in your browser at `http://localhost:3000`.
+The application will be available at `http://localhost:3000`
+
+## Usage
+
+### Browsing Cocktails
+- The app starts with a grid of random cocktails
+- Use the "Load More" button to fetch additional random cocktails
+- Click on any cocktail card to view its details
+
+### Searching
+- Use the search bar at the top to find specific cocktails
+- Enter the cocktail name and press Enter or click Search
+- Results will be displayed in the same grid layout
+
+### Viewing Details
+- Click on any cocktail card to view its full details
+- Details include:
+  - Cocktail name
+  - Image
+  - Complete list of ingredients with measurements
+  - Preparation instructions
+- Use the "Back to Grid" button to return to the main view
+
+### Random Cocktail
+- Click the "Random Cocktail" button to get a random cocktail suggestion
+- The app will display a random cocktail from the current collection
+
+## Technologies Used
+
+- React
+- TypeScript
+- React Masonry CSS
+- Axios for API calls
+- TheCocktailDB API
+
+## API Reference
+
+This application uses [TheCocktailDB API](https://www.thecocktaildb.com/api.php) for cocktail data.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- TheCocktailDB for providing the cocktail data API
+- React Masonry CSS for the grid layout
+- All contributors who have helped improve this project
 
 ## Project Structure
 ```
@@ -35,23 +113,6 @@ cocktail-curator/
 └── README.md       # Documentation
 ```
 
-## Usage
-
-1. **Search Cocktails**
-   - Type a cocktail name in the search bar
-   - Press Enter or click Search
-   - View the list of matching cocktails
-
-2. **Random Cocktail**
-   - Click the "Random Cocktail" button
-   - Get a random cocktail suggestion
-
-3. **View Details**
-   - Click on any cocktail card
-   - See ingredients and instructions
-   - Click "Back to Results" to return
-
-
 ## Current Progress
 
 - [x] Basic project structure setup
@@ -59,8 +120,14 @@ cocktail-curator/
 - [x] Frontend React application
 - [x] Cocktail search functionality
 - [x] Detailed cocktail view
-- [ ] User authentication
-- [ ] Favorite cocktails feature
+- [x] Main page with interactions
+   - Shows a Pinterest-style infinite scroll grid of random cocktails on load.  
+   - Rolls the title if it is over length.
+   - Shows all matches in a grid when searching.
+   - The "Random Cocktail" button shows a single random cocktail detail from the current grid (random or search).
+   - The "Back to Grid" button returns to the previous grid and re-enables infinite scroll if in random mode.
+- [x] Smart recommendations system
+- [x] User authentication
 - [ ] Advanced filtering options
 
 ## API Endpoints
@@ -71,58 +138,25 @@ cocktail-curator/
 - `GET /api/cocktails/ingredient/{ingredient}` - Filter by ingredient
 - `GET /api/cocktails/category/{category}` - Filter by category
 
-## Features
-- Cocktail search and discovery
-- User authentication
-- Favorite cocktails management
-- Data visualization dashboard
-- Machine learning recommendations
-
----
-
-## 1. Project Objectives
+## Project Objectives
 
 - **Collect and organize DIY cocktail recipes** from publicly available online sources into a structured, searchable format.  
 - **Develop a responsive web interface** that allows users to search, filter, and view cocktail recipes based on ingredients, alcohol type, or flavor profile.  
 - **Implement a feature for users to input available ingredients** and receive matching cocktail suggestions.
 
----
-
-## 2. Target Users and Their Needs
+## Target Users
 
 - **Home cocktail enthusiasts** – Need simple, easy-to-follow recipes to make drinks with ingredients they already have.  
 - **Beginner mixology learners** – Need guided instructions, visual clarity, and drink ideas for building their skills.  
 - **Casual users hosting social events** – Need quick suggestions for popular or themed cocktails that fit their available ingredients and occasion.
 
----
-
-## 3. Key Deliverables
-
-- **Curated cocktail recipe dataset** – A structured collection of at least 100 cocktail recipes sourced from public websites.  
-- **Searchable and filterable web interface** – A responsive browser application that allows users to explore recipes by ingredients, alcohol type, or flavor.  
-- **Ingredient-matching recommendation feature** – A tool that suggests recipes based on user-input available ingredients.
-
----
-
-## 4. Special Constraints (e.g., Regulatory Compliance)
-
-- Recipes and images will only be collected from publicly available sources that allow reuse or will be clearly cited.  
-- The site will focus on recipe discovery and will avoid promoting alcohol consumption, in line with student project and institutional guidelines.
-
----
-
-## 5. Expected Outcome
-
-- The final system will enable users to discover, filter, and learn how to make cocktails based on their preferences or available ingredients, with a focus on usability and interface quality.
-
-
-## API
-This application uses [TheCocktailDB API](https://www.thecocktaildb.com/api.php) for cocktail data.
-
-
-## Another Version in the Branch Full
-
-
 ## License
-MIT
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- TheCocktailDB for providing the cocktail data API
+- React Masonry CSS for the grid layout
+- All contributors who have helped improve this project
 
