@@ -105,12 +105,34 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Project Structure
 ```
 cocktail-curator/
-├── src/            # Source code
-│   ├── App.js     # Main application component
-│   └── App.css    # Styles
-├── public/         # Static files
-├── package.json    # Project configuration
-└── README.md       # Documentation
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   └── ...             # Component files
+│   │
+│   ├── pages/              # Page components
+│   │   └── ...             # Page files
+│   │
+│   ├── api/                # API integration
+│   │   └── ...             # API related files
+│   │
+│   ├── server/             # Server-side code
+│   │   └── ...             # Server implementation
+│   │
+│   ├── App.ts              # Main application component
+│   ├── App.css             # Main application styles
+│   ├── MarqueeText.js      # Scrolling text component
+│   └── index.js            # Application entry point
+│
+├── public/                 # Static files
+│   └── ...                 # Public assets
+│
+├── node_modules/           # Dependencies
+├── .git/                   # Git repository
+├── .gitignore             # Git ignore rules
+├── package.json           # Project configuration
+├── package-lock.json      # Dependency lock file
+├── tsconfig.json          # TypeScript configuration
+└── README.md              # Project documentation
 ```
 
 ## Current Progress
