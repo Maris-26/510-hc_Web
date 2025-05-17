@@ -1,9 +1,10 @@
 # Cocktail Curator 🍸  
 **TECHIN 510 B Sp 25: Programming For Digital And Physical User Interfaces**
 
-> **Important**: Before starting, please add your OpenAI API key to the `.env` file:
+> **Important**: Before starting, please add your OpenAI API key to the `components/RecommendationFeature.tsx` file:
 > ```
-> OPENAI_API_KEY=your_api_key_here
+> // line 20
+> apiKey: process.env.REACT_APP_OPENAI_API_KEY
 > ```
 
 A modern web application for exploring and discovering cocktails. Built with React and TypeScript, featuring a beautiful masonry grid layout and interactive cocktail details.
@@ -47,30 +48,6 @@ npm start
 
 The application will be available at `http://localhost:3000`
 
-## Usage
-
-### Browsing Cocktails
-- The app starts with a grid of random cocktails
-- Use the "Load More" button to fetch additional random cocktails
-- Click on any cocktail card to view its details
-
-### Searching
-- Use the search bar at the top to find specific cocktails
-- Enter the cocktail name and press Enter or click Search
-- Results will be displayed in the same grid layout
-
-### Viewing Details
-- Click on any cocktail card to view its full details
-- Details include:
-  - Cocktail name
-  - Image
-  - Complete list of ingredients with measurements
-  - Preparation instructions
-- Use the "Back to Grid" button to return to the main view
-
-### Random Cocktail
-- Click the "Random Cocktail" button to get a random cocktail suggestion
-- The app will display a random cocktail from the current collection
 
 ## Technologies Used
 
@@ -92,15 +69,6 @@ This application uses [TheCocktailDB API](https://www.thecocktaildb.com/api.php)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- TheCocktailDB for providing the cocktail data API
-- React Masonry CSS for the grid layout
-- All contributors who have helped improve this project
 
 ## Project Structure
 ```
@@ -142,8 +110,8 @@ cocktail-curator/
 - [x] Frontend React application
 - [x] Cocktail search functionality
 - [x] Detailed cocktail view
+- [x] Recommendation system
 - [ ] User authentication
-- [ ] Favorite cocktails feature
 - [ ] Advanced filtering options
 
 ## API Endpoints
