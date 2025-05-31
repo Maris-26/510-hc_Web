@@ -14,13 +14,15 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCocktail, setSelectedCocktail] = useState(null);
   const [mode, setMode] = useState('grid');
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const MAX_COCKTAILS = 636;
-
+  
   // Fetch random cocktails and append to the list
   const fetchRandomCocktails = useCallback(async (count = 12) => {
+    // Don't fetch more if we've reached the limit
+    if (cocktails.length >= MAX_COCKTAILS) {
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     try {
@@ -28,7 +30,7 @@ function App() {
         axios.get(`${API_URL}/random.php`)
       );
       const results = await Promise.all(promises);
-      // Remove duplicates
+      // Remove duplicates and ensure we don't exceed MAX_COCKTAILS
       const newDrinks = results
         .map(res => res.data.drinks[0])
         .filter(
@@ -36,7 +38,12 @@ function App() {
             arr.findIndex(d => d.idDrink === drink.idDrink) === idx &&
             !cocktails.some(c => c.idDrink === drink.idDrink)
         );
-      setCocktails(prev => [...prev, ...newDrinks]);
+      
+      // Only add drinks up to MAX_COCKTAILS
+      const remainingSlots = MAX_COCKTAILS - cocktails.length;
+      const drinksToAdd = newDrinks.slice(0, remainingSlots);
+      
+      setCocktails(prev => [...prev, ...drinksToAdd]);
       setMode('randomGrid');
       setSelectedCocktail(null);
     } catch (err) {
