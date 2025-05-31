@@ -17,9 +17,8 @@ const RecommendationFeature = () => {
   const startQuiz = async () => {
     setLoadingQuestions(true);
     try {
-      const apiKey = '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';
       const client = new Groq({
-        apiKey: apiKey,
+        apiKey: process.env.REACT_APP_GROQ_API_KEY,
         dangerouslyAllowBrowser: true
       });
 
@@ -160,9 +159,8 @@ const RecommendationFeature = () => {
   const getRecommendation = async (finalPreferences) => {
     setLoading(true);
     try {
-      const apiKey = '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';
       const client = new Groq({
-        apiKey: apiKey,
+        apiKey: process.env.REACT_APP_GROQ_API_KEY,
         dangerouslyAllowBrowser: true
       });
 

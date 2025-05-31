@@ -8,14 +8,16 @@ import RecommendationFeature from './components/RecommendationFeature.js';
 const API_URL = 'https://www.thecocktaildb.com/api/json/v1/1';
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState('');
   const [cocktails, setCocktails] = useState([]);
-  const [selectedCocktail, setSelectedCocktail] = useState(null);
-  const [mode, setMode] = useState('randomGrid'); // 'randomGrid', 'searchGrid', 'singleDetail', 'recommendation'
   const [loading, setLoading] = useState(false);
-  const [endReached, setEndReached] = useState(false);
-  const MAX_COCKTAILS = 636;
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCocktail, setSelectedCocktail] = useState(null);
+  const [mode, setMode] = useState('grid');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const MAX_COCKTAILS = 636;
 
   // Fetch random cocktails and append to the list
   const fetchRandomCocktails = useCallback(async (count = 12) => {
