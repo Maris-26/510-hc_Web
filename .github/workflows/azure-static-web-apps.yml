@@ -28,7 +28,7 @@ jobs:
           app_location: "/" # App source code path
           api_location: "" # Api source code path - leave empty if not used
           output_location: "build" # Built app content directory
-          app_build_command: "npm run build"
+          app_build_command: "npm install && npm run build"
           api_build_command: ""
           skip_app_build: false
         env:
