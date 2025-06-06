@@ -114,9 +114,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [x] Frontend React application
 - [x] Cocktail search functionality
 - [x] Detailed cocktail view
-- [ ] User authentication
-- [ ] Favorite cocktails feature
-- [ ] Advanced filtering options
+- [x] User authentication
+- [x] Favorite cocktails feature
+- [x] Advanced filtering options
 
 ## API Endpoints
 
