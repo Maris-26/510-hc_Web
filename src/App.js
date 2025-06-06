@@ -4,16 +4,24 @@ import axios from 'axios';
 import './App.css';
 import MarqueeText from './MarqueeText';
 import RecommendationFeature from './components/RecommendationFeature.js';
+import ProfileButton from './components/Profile/ProfileButton';
+import FavoriteButton from './components/FavoriteButton';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 const API_URL = 'https://www.thecocktaildb.com/api/json/v1/1';
 
-function App() {
+function AppContent() {
   const [cocktails, setCocktails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterType, setFilterType] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [types] = useState(['Alcoholic', 'Non_Alcoholic', 'Optional_Alcohol']);
   const [selectedCocktail, setSelectedCocktail] = useState(null);
   const [mode, setMode] = useState('grid');
+  const { user, favorites } = useAuth();
   const MAX_COCKTAILS = 636;
   
   // Fetch random cocktails and append to the list
@@ -53,15 +61,55 @@ function App() {
     }
   }, [cocktails]);
 
-  // Fetch cocktails by search
-  const searchCocktails = async (e) => {
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/list.php?c=list`);
+        setCategories(response.data.drinks.map(drink => drink.strCategory));
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Filter cocktails
+  const filterCocktails = async (e) => {
     e.preventDefault();
-    if (!searchTerm.trim()) return;
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${API_URL}/search.php?s=${searchTerm}`);
-      setCocktails(response.data.drinks || []);
+      let filteredCocktails = [];
+      
+      // If search term is provided, search by name
+      if (searchTerm.trim()) {
+        const response = await axios.get(`${API_URL}/search.php?s=${searchTerm}`);
+        filteredCocktails = response.data.drinks || [];
+      } else {
+        // If no search term, get random cocktails
+        const promises = Array.from({ length: 12 }, () =>
+          axios.get(`${API_URL}/random.php`)
+        );
+        const results = await Promise.all(promises);
+        filteredCocktails = results.map(res => res.data.drinks[0]);
+      }
+
+      // Apply category filter
+      if (filterCategory) {
+        filteredCocktails = filteredCocktails.filter(
+          cocktail => cocktail.strCategory === filterCategory
+        );
+      }
+
+      // Apply type filter
+      if (filterType) {
+        filteredCocktails = filteredCocktails.filter(
+          cocktail => cocktail.strAlcoholic === filterType
+        );
+      }
+
+      setCocktails(filteredCocktails);
       setMode('searchGrid');
       setSelectedCocktail(null);
     } catch (err) {
@@ -116,24 +164,105 @@ function App() {
     500: 1
   };
 
+  // Add a new function to handle favorites view
+  const showFavorites = () => {
+    if (!user) {
+      // If not logged in, show login modal through ProfileButton
+      return;
+    }
+    setCocktails(favorites);
+    setMode('favorites');
+  };
+
+  // Function to handle mode changes
+  const handleModeChange = (newMode) => {
+    if (newMode === 'favorites' && !user) {
+      return; // Don't change mode if trying to access favorites while not logged in
+    }
+    setMode(newMode);
+    setSelectedCocktail(null);
+    if (newMode === 'randomGrid') {
+      fetchRandomCocktails(12);
+    }
+  };
+
   return (
     <div className="App">
       <header>
         <h1>Cocktail Curator</h1>
+        <ProfileButton />
       </header>
       <main>
         <div className="search-container">
-          <form onSubmit={searchCocktails} className="flex flex-1">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search for a cocktail..."
-            />
-            <button type="submit">Search</button>
-          </form>
-          <button onClick={showRandomDetail}>Random Cocktail</button>
-          <button onClick={() => setMode('recommendation')}>Get Personalized Recommendation</button>
+          <div className="navigation-buttons">
+            <button
+              className={`nav-button ${mode === 'randomGrid' ? 'active' : ''}`}
+              onClick={() => handleModeChange('randomGrid')}
+            >
+              All Cocktails
+            </button>
+            <button
+              className={`nav-button ${mode === 'searchGrid' ? 'active' : ''}`}
+              onClick={() => handleModeChange('searchGrid')}
+            >
+              Filter
+            </button>
+            <button
+              className={`nav-button ${mode === 'singleDetail' ? 'active' : ''}`}
+              onClick={showRandomDetail}
+            >
+              Random Cocktail
+            </button>
+            <button
+              className={`nav-button ${mode === 'recommendation' ? 'active' : ''}`}
+              onClick={() => handleModeChange('recommendation')}
+            >
+              Recommendation
+            </button>
+            <button
+              className={`nav-button ${mode === 'favorites' ? 'active' : ''} ${!user ? 'disabled' : ''}`}
+              onClick={showFavorites}
+              title={!user ? 'Login to access collections' : 'View your collections'}
+            >
+              Collections
+            </button>
+          </div>
+
+          {mode === 'searchGrid' && (
+            <form onSubmit={filterCocktails} className="filter-form">
+              <div className="filter-group">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by name..."
+                />
+              </div>
+              <div className="filter-group">
+                <select 
+                  value={filterCategory} 
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((category, index) => (
+                    <option key={index} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <select 
+                  value={filterType} 
+                  onChange={(e) => setFilterType(e.target.value)}
+                >
+                  <option value="">All Types</option>
+                  {types.map((type, index) => (
+                    <option key={index} value={type}>{type.replace('_', ' ')}</option>
+                  ))}
+                </select>
+              </div>
+              <button type="submit">Apply Filters</button>
+            </form>
+          )}
         </div>
 
         {error && <div className="error">{error}</div>}
@@ -143,7 +272,12 @@ function App() {
           <RecommendationFeature />
         ) : mode === 'singleDetail' && selectedCocktail ? (
           <div className="cocktail-details">
-            <h2>{selectedCocktail.strDrink}</h2>
+            <div className="cocktail-header">
+              <h2>{selectedCocktail.strDrink}</h2>
+              <div className="cocktail-actions">
+                <FavoriteButton cocktail={selectedCocktail} />
+              </div>
+            </div>
             <img src={selectedCocktail.strDrinkThumb} alt={selectedCocktail.strDrink} />
             <div className="ingredients">
               <h3>Ingredients:</h3>
@@ -181,20 +315,31 @@ function App() {
                 }}
               >
                 <img src={cocktail.strDrinkThumb} alt={cocktail.strDrink} />
-                <h3 className="cocktail-title">
-                  <MarqueeText>{cocktail.strDrink}</MarqueeText>
-                </h3>
+                <FavoriteButton cocktail={cocktail} />
+                <div className="cocktail-title">
+                  <MarqueeText text={cocktail.strDrink} />
+                </div>
               </div>
             ))}
           </Masonry>
         )}
       </main>
-      <button 
+      
+      <button
         className="back-to-top"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      >  ↑ Top
+      >
+        ↑ Top
       </button>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

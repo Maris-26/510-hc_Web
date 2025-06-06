@@ -1,11 +1,37 @@
 # Cocktail Curator 🍸  
 **TECHIN 510 B Sp 25: Programming For Digital And Physical User Interfaces**
 
-A full-stack application for managing and discovering cocktails, built with MERN stack and Streamlit.
+A modern web application for discovering, exploring, and managing your favorite cocktails. Built with React and TheCocktailDB API.
+
+## Features
+
+### Core Features
+- **Browse Cocktails**: View a grid of cocktails with smooth animations and responsive design
+- **Search & Filter**: Find cocktails by name, category, or type
+- **Random Cocktail**: Get a random cocktail suggestion
+- **Detailed View**: See complete cocktail information including ingredients and instructions
+- **Collections**: Save your favorite cocktails (requires login)
+- **Recommendation System**: Get personalized cocktail recommendations based on your preferences
+
+### User Features
+- **User Authentication**: Register and login to access personal features
+- **Favorites**: Like and save your favorite cocktails
+- **Collections View**: Access all your saved cocktails in one place
+
+### UI/UX Features
+- **Responsive Design**: Works on desktop and mobile devices
+- **Dark Mode**: Automatic dark mode support
+- **Smooth Animations**: Rolling text for long cocktail names
+- **Infinite Scroll**: Load more cocktails as you scroll
+- **Modern Interface**: Clean and intuitive user interface
 
 ## Quick Setup
 
-### Step-by-Step Setup
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
 1. Clone the repository:
 ```bash
 git clone https://github.com/Maris-26/510-hc_Web.git
@@ -17,7 +43,7 @@ cd 510-hc_Web
 npm install
 ```
 
-3. Start the application:
+3. Start the development server:
 ```bash
 npm start
 ```
@@ -27,30 +53,59 @@ The application will open automatically in your browser at `http://localhost:300
 ## Project Structure
 ```
 cocktail-curator/
-├── src/            # Source code
-│   ├── App.js     # Main application component
-│   └── App.css    # Styles
-├── public/         # Static files
-├── package.json    # Project configuration
-└── README.md       # Documentation
+├── src/
+│   ├── components/     # React components
+│   │   ├── Auth/      # Authentication components
+│   │   ├── Profile/   # User profile components
+│   │   └── ...
+│   ├── context/       # React context providers
+│   ├── styles/        # CSS styles
+│   ├── App.js         # Main application component
+│   └── App.css        # Main styles
+├── public/            # Static files
+├── package.json       # Project configuration
+└── README.md         # Documentation
 ```
 
-## Usage
+## Usage Guide
 
-1. **Search Cocktails**
-   - Type a cocktail name in the search bar
-   - Press Enter or click Search
-   - View the list of matching cocktails
+### Browsing Cocktails
+1. **All Cocktails**: View the main grid of cocktails
+2. **Filter**: Use the search bar and filters to find specific cocktails
+3. **Random**: Get a random cocktail suggestion
+4. **Collections**: View your saved cocktails (requires login)
 
-2. **Random Cocktail**
-   - Click the "Random Cocktail" button
-   - Get a random cocktail suggestion
+### Managing Favorites
+1. Click the heart icon on any cocktail to add/remove from favorites
+2. Login required to save favorites
+3. Access all favorites in the Collections view
 
-3. **View Details**
-   - Click on any cocktail card
-   - See ingredients and instructions
-   - Click "Back to Results" to return
+### Getting Recommendations
+1. Click the "Recommendation" button
+2. Answer a few questions about your preferences
+3. Get personalized cocktail suggestions
 
+## API Integration
+The application uses TheCocktailDB API:
+- Random cocktails: `/random.php`
+- Search by name: `/search.php?s={name}`
+- Filter by category: `/filter.php?c={category}`
+- Filter by ingredient: `/filter.php?i={ingredient}`
+
+## Contributing
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+- TheCocktailDB for providing the cocktail data API
+- React team for the amazing framework
+- All contributors who have helped improve this project
 
 ## Current Progress
 

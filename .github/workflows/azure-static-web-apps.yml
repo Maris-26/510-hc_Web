@@ -31,8 +31,10 @@ jobs:
           app_build_command: "npm install && npm run build"
           api_build_command: ""
           skip_app_build: false
+          skip_deploy_on_missing_secrets: true
         env:
           REACT_APP_GROQ_API_KEY: ${{ secrets.REACT_APP_GROQ_API_KEY }}
+          NODE_ENV: "production"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

@@ -1,25 +1,31 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-const MarqueeText = ({ children, className = '', ...props }) => {
-  const spanRef = useRef(null);
+const MarqueeText = ({ text }) => {
+  const containerRef = useRef(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   useEffect(() => {
-    const el = spanRef.current;
-    if (el) {
-      setIsOverflowing(el.scrollWidth > el.clientWidth);
-    }
-  }, [children]);
+    const checkOverflow = () => {
+      if (containerRef.current) {
+        const container = containerRef.current;
+        const textWidth = container.scrollWidth;
+        const containerWidth = container.clientWidth;
+        setIsOverflowing(textWidth > containerWidth);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [text]);
 
   return (
-    <span
-      ref={spanRef}
-      className={`${className} ${isOverflowing ? 'marquee' : ''}`}
-      style={{ display: 'inline-block', width: '100%' }}
-      {...props}
-    >
-      {children}
-    </span>
+    <div className="marquee-wrapper" ref={containerRef}>
+      <div className={`marquee-content ${isOverflowing ? 'animate' : ''}`}>
+        <span>{text}</span>
+        {isOverflowing && <span>{text}</span>}
+      </div>
+    </div>
   );
 };
 
