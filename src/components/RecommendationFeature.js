@@ -59,7 +59,6 @@ const RecommendationFeature = () => {
       let questionsData;
       
       try {
-        // Try to parse the response as JSON
         questionsData = JSON.parse(response);
       } catch (error) {
         console.error('Invalid JSON response:', response);
@@ -71,7 +70,6 @@ const RecommendationFeature = () => {
         throw new Error('Invalid questions format');
       }
 
-      // Validate each question has exactly 5 options
       const validQuestions = questionsData.questions.every(q => 
         q.question && 
         Array.isArray(q.options) && 
@@ -114,6 +112,7 @@ const RecommendationFeature = () => {
     setPreferences({});
     setRecommendation('');
     setShowStartButton(true);
+    setQuestions([]);
   };
 
   const validateCocktail = async (cocktailName) => {
@@ -256,36 +255,16 @@ const RecommendationFeature = () => {
       }
     }
 
-    return `
-<div class="cocktail-detail">
-  <div class="cocktail-header">
-    <h2>${cocktail.strDrink}</h2>
-    ${cocktail.strDrinkThumb ? `<img src="${cocktail.strDrinkThumb}" alt="${cocktail.strDrink}" />` : ''}
-  </div>
-
-  <div class="cocktail-info">
-    ${cocktail.strCategory ? `<p><strong>Category:</strong> ${cocktail.strCategory}</p>` : ''}
-    ${cocktail.strAlcoholic ? `<p><strong>Type:</strong> ${cocktail.strAlcoholic}</p>` : ''}
-    ${cocktail.strGlass ? `<p><strong>Glass:</strong> ${cocktail.strGlass}</p>` : ''}
-  </div>
-
-  <div class="cocktail-match">
-    <h3>Why This Matches Your Preferences</h3>
-    <p>${explanation}</p>
-  </div>
-
-  <div class="cocktail-ingredients">
-    <h3>Ingredients</h3>
-    <ul>
-      ${ingredients.map(ing => `<li>${ing}</li>`).join('\n')}
-    </ul>
-  </div>
-
-  <div class="cocktail-instructions">
-    <h3>Instructions</h3>
-    <p>${cocktail.strInstructions}</p>
-  </div>
-</div>`;
+    return {
+      name: cocktail.strDrink,
+      image: cocktail.strDrinkThumb,
+      category: cocktail.strCategory,
+      type: cocktail.strAlcoholic,
+      glass: cocktail.strGlass,
+      explanation: explanation,
+      ingredients: ingredients,
+      instructions: cocktail.strInstructions
+    };
   };
 
   return (
@@ -297,31 +276,74 @@ const RecommendationFeature = () => {
         <div className="loading">Getting your personalized recommendation...</div>
       ) : (
         <>
-          {showStartButton ? (
-            <div className="start-section">
-              <button onClick={startQuiz} className="start-button">
-                Start Your Recommendation
-              </button>
-            </div>
-          ) : !recommendation ? (
+          {showStartButton && (
+            <button 
+              className="start-button"
+              onClick={startQuiz}
+              disabled={loadingQuestions}
+            >
+              {loadingQuestions ? 'Loading...' : 'Start'}
+            </button>
+          )}
+          {!showStartButton && !recommendation && questions.length > 0 && (
             <div className="question-container">
               <h3>{questions[step].question}</h3>
               <div className="options-grid">
-                {questions[step].options.map((option) => (
+                {questions[step].options.map((option, index) => (
                   <button
-                    key={option}
-                    onClick={() => handleAnswer(option)}
+                    key={index}
                     className="option-button"
+                    onClick={() => handleAnswer(option)}
                   >
                     {option}
                   </button>
                 ))}
               </div>
             </div>
-          ) : (
-            <div className="recommendation-result">
-              <div className="recommendation-text" dangerouslySetInnerHTML={{ __html: recommendation }} />
-              <button onClick={resetQuiz} className="reset-button">
+          )}
+          {loading && <div className="loading">Getting your recommendation...</div>}
+          {recommendation && (
+            <div className="recommendation-container">
+              <div className="cocktail-detail">
+                <div className="cocktail-header">
+                  <h2>{recommendation.name}</h2>
+                  {recommendation.image && (
+                    <img src={recommendation.image} alt={recommendation.name} />
+                  )}
+                </div>
+
+                <div className="cocktail-info">
+                  {recommendation.category && (
+                    <p><strong>Category:</strong> {recommendation.category}</p>
+                  )}
+                  {recommendation.type && (
+                    <p><strong>Type:</strong> {recommendation.type}</p>
+                  )}
+                  {recommendation.glass && (
+                    <p><strong>Glass:</strong> {recommendation.glass}</p>
+                  )}
+                </div>
+
+                <div className="cocktail-ingredients">
+                  <h3>Ingredients</h3>
+                  <ul>
+                    {recommendation.ingredients.map((ingredient, index) => (
+                      <li key={index}>{ingredient}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="cocktail-instructions">
+                  <h3>Instructions</h3>
+                  <p>{recommendation.instructions}</p>
+                </div>
+
+                <div className="cocktail-match">
+                  <h3>Why This Matches Your Preferences</h3>
+                  <p>{recommendation.explanation}</p>
+                </div>
+              </div>
+              <button className="reset-button" onClick={resetQuiz}>
                 Get Another Recommendation
               </button>
             </div>
