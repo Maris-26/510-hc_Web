@@ -18,7 +18,7 @@ function AppContent() {
   const [filterCategory, setFilterCategory] = useState('');
   const [filterType, setFilterType] = useState('');
   const [categories, setCategories] = useState([]);
-  const [types, setTypes] = useState(['Alcoholic', 'Non_Alcoholic', 'Optional_Alcohol']);
+  const [types] = useState(['Alcoholic', 'Non_Alcoholic', 'Optional_Alcohol']);
   const [selectedCocktail, setSelectedCocktail] = useState(null);
   const [mode, setMode] = useState('grid');
   const { user, favorites } = useAuth();
