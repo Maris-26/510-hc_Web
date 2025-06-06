@@ -121,11 +121,13 @@ input:focus {
   width: 100%;
   overflow: hidden;
   position: relative;
+  white-space: nowrap;
 }
 
 .marquee-content {
   display: inline-block;
   white-space: nowrap;
+  padding-right: 30px;
 }
 
 .marquee-content.animate {
